@@ -1,5 +1,7 @@
 # Hona.ArchitectureTests
 
+[![](https://img.shields.io/nuget/v/Hona.ArchitectureTests.Runner)](https://www.nuget.org/packages/Hona.ArchitectureTests.Runner)
+
 ## Usage
 
 The most simple way to use the library is to use the predefined architecture suites.
