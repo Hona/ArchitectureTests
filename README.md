@@ -10,26 +10,19 @@ public void CleanArchitecture()
 {
     Ensure.CleanArchitecture(x =>
     {
-        x.Presentation = new AggregatePart(
+        x.Presentation = new TypesPart([typeof(ConsolePresenter), typeof(Program), typeof(LogHelper)]);
+        x.Application = new AggregatePart(
         [
-            new AssemblyPart(typeof(WebApi.DependencyInjection).Assembly),
-            new AssemblyPart(typeof(GraphQL.DependencyInjection).Assembly)
+            new NamespacePart(SampleAppAssembly, ".Jobs"),
+            new NamespacePart(SampleAppAssembly, ".Services")
         ]);
-
-        x.Application = new AssemblyPart(typeof(Application.DependencyInjection).Assembly);
-
-        x.Domain = new AssemblyPart(typeof(Domain.Customers.CustomerId).Assembly);
-
+        x.Domain = new NamespacePart(SampleAppAssembly, ".Models");
         x.Infrastructure = new AggregatePart(
         [
-            new AssemblyPart(typeof(Infrastructure.DependencyInjection).Assembly),
-            /*new TypesPart(
-            [
-                typeof(Microsoft.EntityFrameworkCore.DbContext),
-                typeof(Microsoft.EntityFrameworkCore.DbSet<>),
-            ])*/
+            new NamespacePart(SampleAppAssembly, ".Data"),
+            new AssemblyPart(typeof(WebApiClient).Assembly)
         ]);
-    });
+    }).Assert();
 }
 ```
 
@@ -54,20 +47,23 @@ private static readonly IApplicationPart Infrastructure =
 public void Presentation_DependsOn_Application()
 {
     Ensure.That(Presentation)
-        .DependsOn(Application);
+        .DependsOn(Application)
+        .Assert();
 }
 
 [Fact]
 public void Application_DependsOn_Domain()
 {
     Ensure.That(Application)
-        .DependsOn(Domain);
+        .DependsOn(Domain)
+        .Assert();
 }
 
 [Fact]
 public void Infrastructure_DependsOn_Application()
 {
     Ensure.That(Infrastructure)
-        .DependsOn(Application);
+        .DependsOn(Application)
+        .Assert();
 }
 ```
