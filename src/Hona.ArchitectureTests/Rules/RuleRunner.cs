@@ -4,23 +4,19 @@ namespace Hona.ArchitectureTests.Rules;
 
 public class RuleRunner(IApplicationPart source)
 {
-    public void DependsOn(IApplicationPart target)
-    {
-        new DependencyDirectionRule()
+    public RuleOutcome DependsOn(IApplicationPart target) =>
+        new DependencyDirectionRule
         {
             Source = source,
             Target = target,
             Direction = DependencyDirection.SourceToTarget
-        }.IsCompliant().Assert();
-    }
+        }.IsCompliant();
 
-    public void DoesNotDependOn(IApplicationPart target)
-    {
-        new DependencyDirectionRule()
+    public RuleOutcome DoesNotDependOn(IApplicationPart target) =>
+        new DependencyDirectionRule
         {
             Source = source,
             Target = target,
             Direction = DependencyDirection.TargetToSource
-        }.IsCompliant().Assert();
-    }
+        }.IsCompliant();
 }

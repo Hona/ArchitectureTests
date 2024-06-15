@@ -7,5 +7,5 @@ public interface IRule
     public IApplicationPart Source { get; }
     public IApplicationPart Target { get; }
 
-    bool IsCompliant();
+    RuleOutcome IsCompliant();
 }

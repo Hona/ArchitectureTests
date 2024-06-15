@@ -11,27 +11,32 @@ public static class Ensure
         return new RuleRunner(part);
     }
 
-    public static void CleanArchitecture(Action<CleanArchitectureConfig> setup)
+    public static IEnumerable<RuleOutcome> CleanArchitecture(Action<CleanArchitectureConfig> setup)
     {
         var config = new CleanArchitectureConfig();
 
         setup(config);
         
         config.EnsureValid();
+
+        config.Presentation.Name = nameof(config.Presentation);
+        config.Application.Name = nameof(config.Application);
+        config.Domain.Name = nameof(config.Domain);
+        config.Infrastructure.Name = nameof(config.Infrastructure);
         
-        That(config.Presentation)
+        yield return That(config.Presentation)
             .DependsOn(config.Application);
-        That(config.Presentation)
+        yield return That(config.Presentation)
             .DependsOn(config.Domain);
-        That(config.Presentation)
+        yield return That(config.Presentation)
             .DependsOn(config.Infrastructure);
         
-        That(config.Application)
+        yield return That(config.Application)
             .DependsOn(config.Domain);
         
-        That(config.Infrastructure)
+        yield return That(config.Infrastructure)
             .DependsOn(config.Application);
-        That(config.Infrastructure)
+        yield return That(config.Infrastructure)
             .DependsOn(config.Domain);
     }
 }

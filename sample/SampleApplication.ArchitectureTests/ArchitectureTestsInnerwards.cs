@@ -1,6 +1,7 @@
 using System.Reflection;
 using Hona.ArchitectureTests;
 using Hona.ArchitectureTests.ApplicationParts;
+using Hona.ArchitectureTests.Runner;
 
 namespace SampleApplication.ArchitectureTests;
 
@@ -24,20 +25,23 @@ public class ArchitectureTestsInnerwards
     public void Presentation_DependsOn_Application()
     {
         Ensure.That(Presentation)
-            .DependsOn(Application);
+            .DependsOn(Application)
+            .Assert();
     }
     
     [Fact]
     public void Application_DependsOn_Domain()
     {
         Ensure.That(Application)
-            .DependsOn(Domain);
+            .DependsOn(Domain)
+            .Assert();
     }
     
     [Fact]
     public void Infrastructure_DependsOn_Application()
     {
         Ensure.That(Infrastructure)
-            .DependsOn(Application);
+            .DependsOn(Application)
+            .Assert();
     }
 }

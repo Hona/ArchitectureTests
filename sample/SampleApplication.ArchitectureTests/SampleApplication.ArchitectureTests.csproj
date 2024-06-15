@@ -21,6 +21,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\src\Hona.ArchitectureTests.Runner\Hona.ArchitectureTests.Runner.csproj" />
       <ProjectReference Include="..\..\src\Hona.ArchitectureTests\Hona.ArchitectureTests.csproj" />
       <ProjectReference Include="..\SampleApplication.Integrations\SampleApplication.Integrations.csproj" />
       <ProjectReference Include="..\SampleApplication\SampleApplication.csproj" />

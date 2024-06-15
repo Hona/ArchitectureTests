@@ -26,7 +26,7 @@ public class DependencyDirectionRule : IRule
     /// To check that x depends on y, then check that y does not depend on x.
     /// The Direction property is used to determine the direction of the check.
     /// </summary>
-    public bool IsCompliant()
+    public RuleOutcome IsCompliant()
     {
         var sourceTypes = Source.GetTypes();
         AddTransientTypesIfAssemblyPart(Source, sourceTypes);
@@ -48,7 +48,27 @@ public class DependencyDirectionRule : IRule
             _ => throw new ArgumentOutOfRangeException()
         };
         
-        return typesThatNeverDependOnOther.All(t => otherTypes.All(o => DoesntDependOn(t, o)));
+        var outcome = new RuleOutcome
+        {
+            Rule = this
+        };
+
+        foreach (var t in typesThatNeverDependOnOther)
+        {
+            foreach (var o in otherTypes)
+            {
+                var failures = DoesntDependOn(t, o);
+                if (failures is not null)
+                {
+                    foreach (var failure in failures)
+                    {
+                        outcome.Failures.Add(failure);
+                    }
+                }
+            }
+        }
+
+        return outcome;
     }
     
     private void AddTransientTypesIfAssemblyPart(IApplicationPart part, List<Type> dependencies)
@@ -68,11 +88,27 @@ public class DependencyDirectionRule : IRule
         }
     }
 
-    private static bool DoesntDependOn(Type sourceType, Type targetType)
+    private static IEnumerable<Failure>? DoesntDependOn(Type sourceType, Type targetType)
     {
         var sourceDependencies = GetDependencies(sourceType).ToList();
-        return sourceDependencies.Count == 0 ||
-               !sourceDependencies.Any(x => x == targetType || (targetType.IsGenericType && IsGenericTypeOf(targetType.GetGenericTypeDefinition(), x)));
+
+        if (sourceDependencies.Count is 0)
+        {
+            yield break;
+        }
+
+        var filteredSourceDependencies = sourceDependencies
+            .Where(x => !x.FullName.StartsWith("System."))
+            .Where(x => !x.FullName.StartsWith("Microsoft."));
+
+        foreach (var x in filteredSourceDependencies)
+        {
+            if ((x == targetType || (targetType.IsGenericType && 
+                                      IsGenericTypeOf(targetType.GetGenericTypeDefinition(), x))))
+            {
+                yield return new Failure($"{sourceType.FullName} depends on {x.FullName}");
+            }
+        }
     }
 
     private static bool IsGenericTypeOf(Type genericType, Type someType)
@@ -103,6 +139,16 @@ public class DependencyDirectionRule : IRule
             .Select(p => p.ParameterType);
         allTypesUsed.AddRange(typesInMethods);
         
-        return allTypesUsed.DistinctBy(x => x.FullName);
+        return allTypesUsed.Distinct();
     }
+
+    public override string ToString() => $"{Source} {DirectionFriendlyName} {Target}";
+
+    private string DirectionFriendlyName => Direction switch
+    {
+        DependencyDirection.SourceToTarget => "depends on",
+        DependencyDirection.TargetToSource => "does not depend on",
+        DependencyDirection.Neither => "mutually exclusive",
+        _ => throw new ArgumentOutOfRangeException()
+    };
 }

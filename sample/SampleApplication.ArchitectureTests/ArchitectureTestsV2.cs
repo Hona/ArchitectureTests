@@ -3,6 +3,7 @@ using System.Reflection;
 using Hona.ArchitectureTests;
 using Hona.ArchitectureTests.ApplicationParts;
 using Hona.ArchitectureTests.Architectures;
+using Hona.ArchitectureTests.Runner;
 using SampleApplication.Integrations;
 
 namespace SampleApplication.ArchitectureTests;
@@ -28,6 +29,6 @@ public class ArchitectureTestsV2
                 new NamespacePart(SampleAppAssembly, ".Data"),
                 new AssemblyPart(typeof(WebApiClient).Assembly)
             ]);
-        });
+        }).Assert();
     }
 }
