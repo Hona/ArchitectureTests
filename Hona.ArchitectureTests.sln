@@ -14,6 +14,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleApplication.Architect
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleApplication.Integrations", "sample\SampleApplication.Integrations\SampleApplication.Integrations.csproj", "{BD6E84EC-77ED-4598-AEE4-EE3A4CADF5AE}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "0 Solution Items", "0 Solution Items", "{E6DE58F7-0C93-441B-8B39-08F12F0B5B9B}"
+	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
+		LICENSE = LICENSE
+		README.md = README.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

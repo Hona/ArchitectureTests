@@ -40,6 +40,4 @@ public class ArchitectureTestsInnerwards
         Ensure.That(Infrastructure)
             .DependsOn(Application);
     }
-    
-    
 }
